@@ -205,6 +205,48 @@
             50%       { box-shadow: 0 4px 35px rgba(255,255,255,0.6); }
         }
 
+        /* ── Loading redirect ── */
+        .loading-wrap {
+            margin-top: 1.2rem;
+            animation: fadeSlideUp 0.7s ease 1.55s both;
+        }
+        .loading-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.72);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.4px;
+        }
+        .loading-label span {
+            color: #7de8ff;
+            font-weight: 700;
+        }
+        .loading-dots i {
+            font-size: 0.38rem;
+            margin: 0 0.15rem;
+            opacity: 0.35;
+            animation: dotBlink 1.05s ease-in-out infinite;
+        }
+        .loading-dots i:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots i:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink {
+            0%, 100% { opacity: 0.35; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-3px); }
+        }
+        .load-track {
+            width: min(250px, 70vw);
+            height: 4px;
+            margin: 0.65rem auto 0;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.16);
+            overflow: hidden;
+        }
+        .load-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #7de8ff, #ffffff);
+        }
+
         /* ── Version badge ── */
         .version-badge {
             margin-top: 2.5rem;
@@ -252,6 +294,16 @@
         <span class="arrow-icon"><i class="fas fa-arrow-right"></i></span>
     </a>
 
+    <div class="loading-wrap" aria-live="polite">
+        <p class="loading-label">Preparing secure login in <span id="countdown">4</span>s</p>
+        <div class="loading-dots" aria-hidden="true">
+            <i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle"></i>
+        </div>
+        <div class="load-track" aria-hidden="true">
+            <div class="load-fill" id="load-fill"></div>
+        </div>
+    </div>
+
     <p class="version-badge">eAttend v1.0 &bull; &copy; 2026</p>
 </div>
 
@@ -272,6 +324,34 @@
             ].join(';');
             container.appendChild(p);
         }
+    })();
+
+    // Redirect to login after a short loading animation.
+    (function startRedirectTimer() {
+        const totalMs = 4000;
+        const fill = document.getElementById('load-fill');
+        const countdown = document.getElementById('countdown');
+        const start = Date.now();
+
+        function animate() {
+            const elapsed = Date.now() - start;
+            const percent = Math.min((elapsed / totalMs) * 100, 100);
+
+            if (fill) {
+                fill.style.width = percent + '%';
+            }
+            if (countdown) {
+                countdown.textContent = Math.max(0, Math.ceil((totalMs - elapsed) / 1000));
+            }
+
+            if (elapsed >= totalMs) {
+                window.location.href = '/login/';
+                return;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
     })();
 
 </script>
