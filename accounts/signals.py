@@ -13,16 +13,16 @@ def ensure_deploy_admin(sender, **kwargs):
 
     User = get_user_model()
 
-    username = os.getenv('ADMIN_USERNAME', 'admin')
-    password = os.getenv('ADMIN_PASSWORD', 'admin123')
-    email = os.getenv('ADMIN_EMAIL', 'admin@eattend.com')
+    username = os.getenv('ADMIN_USERNAME', 'manager')
+    password = os.getenv('ADMIN_PASSWORD', 'manager123')
+    email = os.getenv('ADMIN_EMAIL', 'manager@eattend.com')
 
     user, _ = User.objects.get_or_create(
         username=username,
         defaults={
             'email': email,
-            'first_name': 'System',
-            'last_name': 'Admin',
+            'first_name': 'Maria',
+            'last_name': 'Santos',
             'role': 'manager',
             'is_staff': True,
             'is_superuser': True,
@@ -32,8 +32,8 @@ def ensure_deploy_admin(sender, **kwargs):
 
     # Keep a known credential on deploy so login is always possible.
     user.email = email
-    user.first_name = user.first_name or 'System'
-    user.last_name = user.last_name or 'Admin'
+    user.first_name = user.first_name or 'Maria'
+    user.last_name = user.last_name or 'Santos'
     user.role = 'manager'
     user.is_staff = True
     user.is_superuser = True
