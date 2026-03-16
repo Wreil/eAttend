@@ -1,7 +1,8 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
+from decimal import Decimal
 from .models import LeaveRequest
 from .serializers import LeaveRequestSerializer, LeaveReviewSerializer
 from accounts.permissions import IsManagerOrAdmin, IsOwnerOrManager
@@ -101,6 +102,7 @@ class AdminDashboardSummaryView(APIView):
             'total_employees': User.objects.filter(role='employee', is_active=True).count(),
             'total_attendance': Attendance.objects.count(),
             'today_attendance': Attendance.objects.filter(date=today).count(),
+            'total_overtime_hours': Attendance.objects.aggregate(total=Sum('overtime_hours'))['total'] or Decimal('0'),
             'pending_leaves': LeaveRequest.objects.filter(status='pending').count(),
             'approved_leaves': LeaveRequest.objects.filter(status='approved').count(),
             'rejected_leaves': LeaveRequest.objects.filter(status='rejected').count(),

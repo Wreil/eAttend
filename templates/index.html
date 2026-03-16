@@ -185,6 +185,13 @@
                             </div>
                         </div>
                         <div class="stat-card">
+                            <div class="stat-icon bg-secondary"><i class="fas fa-business-time"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-overtime">—</span>
+                                <span class="stat-label">Overtime Hours</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
                             <div class="stat-icon bg-success"><i class="fas fa-calendar-alt"></i></div>
                             <div class="stat-info">
                                 <span class="stat-value" id="stat-pending-leaves">—</span>
@@ -208,11 +215,12 @@
                                             <th>Time In</th>
                                             <th>Time Out</th>
                                             <th>Hours</th>
+                                            <th>OT</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody id="recent-attendance-tbody">
-                                        <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
+                                        <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -270,6 +278,13 @@
                                 <span class="stat-label">Total Records</span>
                             </div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-dark"><i class="fas fa-business-time"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="mgr-total-overtime">—</span>
+                                <span class="stat-label">Overtime Hours</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Pending Leaves Table -->
@@ -314,11 +329,12 @@
                                             <th>Time In</th>
                                             <th>Time Out</th>
                                             <th>Hours</th>
+                                            <th>OT</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody id="today-attendance-tbody">
-                                        <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
+                                        <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -390,6 +406,13 @@
                             <span class="stat-label">Avg Hours/Day</span>
                         </div>
                     </div>
+                    <div class="stat-card sm">
+                        <div class="stat-icon bg-dark"><i class="fas fa-business-time"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="att-stat-overtime">—</span>
+                            <span class="stat-label">OT Hours</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -403,12 +426,13 @@
                                         <th>Time In</th>
                                         <th>Time Out</th>
                                         <th>Total Hours</th>
+                                        <th>OT Hours</th>
                                         <th>Status</th>
                                         <th>Notes</th>
                                     </tr>
                                 </thead>
                                 <tbody id="att-history-tbody">
-                                    <tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>
+                                    <tr><td colspan="8" class="text-center text-muted">Loading...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -553,12 +577,13 @@
                                         <th>Time In</th>
                                         <th>Time Out</th>
                                         <th>Hours</th>
+                                        <th>OT</th>
                                         <th>Status</th>
                                         <th>Notes</th>
                                     </tr>
                                 </thead>
                                 <tbody id="all-attendance-tbody">
-                                    <tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>
+                                    <tr><td colspan="8" class="text-center text-muted">Loading...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -870,7 +895,7 @@
     <!-- Toast Notification -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="{% static 'js/api.js' %}?v=4"></script>
-    <script src="{% static 'js/app.js' %}?v=4"></script>
+    <script src="{% static 'js/api.js' %}?v=5"></script>
+    <script src="{% static 'js/app.js' %}?v=5"></script>
 </body>
 </html>

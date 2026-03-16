@@ -15,11 +15,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = [
             'id', 'employee', 'employee_name', 'employee_username',
-            'date', 'time_in', 'time_out', 'total_hours',
+            'date', 'time_in', 'time_out', 'total_hours', 'overtime_hours',
             'status', 'status_display', 'notes',
             'can_time_out', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['id', 'employee', 'total_hours', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'employee', 'total_hours', 'overtime_hours', 'created_at', 'updated_at']
 
     def get_employee_name(self, obj):
         return obj.employee.get_full_name() or obj.employee.username
@@ -85,4 +85,5 @@ class AttendanceSummarySerializer(serializers.Serializer):
     late_count = serializers.IntegerField()
     absent_count = serializers.IntegerField()
     total_hours = serializers.DecimalField(max_digits=8, decimal_places=2)
+    overtime_hours = serializers.DecimalField(max_digits=8, decimal_places=2)
     average_hours = serializers.DecimalField(max_digits=5, decimal_places=2)

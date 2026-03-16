@@ -270,6 +270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('stat-present').textContent = summary.present_count;
             document.getElementById('stat-late').textContent = summary.late_count;
             document.getElementById('stat-hours').textContent = parseFloat(summary.total_hours || 0).toFixed(1);
+            document.getElementById('stat-overtime').textContent = parseFloat(summary.overtime_hours || 0).toFixed(1);
         } catch { /* ignore */ }
 
         // Load pending leaves count
@@ -318,7 +319,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btnOut.classList.add('d-none');
                 iconEl.innerHTML = '<i class="fas fa-check-circle"></i>';
                 titleEl.textContent = 'Work Day Complete';
-                subtitleEl.textContent = `${parseFloat(att.total_hours || 0).toFixed(2)} hours logged — ${att.status_display}`;
+                subtitleEl.textContent = `${parseFloat(att.total_hours || 0).toFixed(2)} hours logged, OT ${parseFloat(att.overtime_hours || 0).toFixed(2)}h — ${att.status_display}`;
             }
         }
     }
@@ -360,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderRecentAttendance(records) {
         const tbody = document.getElementById('recent-attendance-tbody');
         if (!records.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No attendance records yet.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No attendance records yet.</td></tr>';
             return;
         }
         tbody.innerHTML = records.map(r => `
@@ -369,6 +370,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${formatTime(r.time_in) || '—'}</td>
                 <td>${formatTime(r.time_out) || '—'}</td>
                 <td>${r.total_hours ? parseFloat(r.total_hours).toFixed(2) + 'h' : '—'}</td>
+                <td>${r.overtime_hours ? parseFloat(r.overtime_hours).toFixed(2) + 'h' : '0.00h'}</td>
                 <td>${statusBadge(r.status)}</td>
             </tr>
         `).join('');
@@ -389,6 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('mgr-approved-leaves').textContent = summary.approved_leaves;
             document.getElementById('mgr-rejected-leaves').textContent = summary.rejected_leaves;
             document.getElementById('mgr-total-attendance').textContent = summary.total_attendance;
+            document.getElementById('mgr-total-overtime').textContent = parseFloat(summary.total_overtime_hours || 0).toFixed(1);
         } catch { /* ignore */ }
 
         // Pending leaves
@@ -430,7 +433,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderTodayAttendance(records) {
         const tbody = document.getElementById('today-attendance-tbody');
         if (!records.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No attendance recorded today.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No attendance recorded today.</td></tr>';
             return;
         }
         tbody.innerHTML = records.map(r => `
@@ -439,6 +442,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${formatTime(r.time_in) || '—'}</td>
                 <td>${formatTime(r.time_out) || '—'}</td>
                 <td>${r.total_hours ? parseFloat(r.total_hours).toFixed(2) + 'h' : '—'}</td>
+                <td>${r.overtime_hours ? parseFloat(r.overtime_hours).toFixed(2) + 'h' : '0.00h'}</td>
                 <td>${statusBadge(r.status)}</td>
             </tr>
         `).join('');
@@ -474,7 +478,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const year = document.getElementById('att-year').value;
         const tbody = document.getElementById('att-history-tbody');
 
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center"><span class="spinner"></span></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center"><span class="spinner"></span></td></tr>`;
 
         try {
             const [records, summary] = await Promise.all([
@@ -488,9 +492,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('att-stat-absent').textContent = summary.absent_count;
             document.getElementById('att-stat-hours').textContent = parseFloat(summary.total_hours || 0).toFixed(1);
             document.getElementById('att-stat-avg').textContent = parseFloat(summary.average_hours || 0).toFixed(1);
+            document.getElementById('att-stat-overtime').textContent = parseFloat(summary.overtime_hours || 0).toFixed(1);
 
             if (!records.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No attendance records for this period.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No attendance records for this period.</td></tr>';
                 return;
             }
 
@@ -501,12 +506,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${formatTime(r.time_in) || '—'}</td>
                     <td>${formatTime(r.time_out) || '—'}</td>
                     <td>${r.total_hours ? parseFloat(r.total_hours).toFixed(2) + 'h' : '—'}</td>
+                    <td>${r.overtime_hours ? parseFloat(r.overtime_hours).toFixed(2) + 'h' : '0.00h'}</td>
                     <td>${statusBadge(r.status)}</td>
                     <td class="text-muted">${escHtml(r.notes) || '—'}</td>
                 </tr>
             `).join('');
         } catch (err) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${escHtml(err.message)}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${escHtml(err.message)}</td></tr>`;
         }
     }
 
@@ -633,13 +639,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const year = document.getElementById('mgr-att-year').value;
         const tbody = document.getElementById('all-attendance-tbody');
 
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center"><span class="spinner"></span></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center"><span class="spinner"></span></td></tr>`;
 
         try {
             const records = await API.getAllAttendance({ month, year });
 
             if (!records.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No attendance records for this period.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No attendance records for this period.</td></tr>';
                 return;
             }
 
@@ -650,12 +656,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${formatTime(r.time_in) || '—'}</td>
                     <td>${formatTime(r.time_out) || '—'}</td>
                     <td>${r.total_hours ? parseFloat(r.total_hours).toFixed(2) + 'h' : '—'}</td>
+                    <td>${r.overtime_hours ? parseFloat(r.overtime_hours).toFixed(2) + 'h' : '0.00h'}</td>
                     <td>${statusBadge(r.status)}</td>
                     <td class="text-muted">${escHtml(r.notes) || '—'}</td>
                 </tr>
             `).join('');
         } catch (err) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${escHtml(err.message)}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${escHtml(err.message)}</td></tr>`;
         }
     }
 

@@ -90,9 +90,11 @@ class MyAttendanceSummaryView(APIView):
             late=Count('id', filter=Q(status='late')),
             absent=Count('id', filter=Q(status='absent')),
             hours=Sum('total_hours'),
+            overtime=Sum('overtime_hours'),
         )
         total = counts['total'] or 0
         total_hours = counts['hours'] or Decimal('0')
+        overtime_hours = counts['overtime'] or Decimal('0')
         avg_hours = (total_hours / total).quantize(Decimal('0.01')) if total > 0 else Decimal('0')
         data = {
             'total_records': total,
@@ -100,6 +102,7 @@ class MyAttendanceSummaryView(APIView):
             'late_count': counts['late'] or 0,
             'absent_count': counts['absent'] or 0,
             'total_hours': total_hours,
+            'overtime_hours': overtime_hours,
             'average_hours': avg_hours,
         }
         serializer = AttendanceSummarySerializer(data)
