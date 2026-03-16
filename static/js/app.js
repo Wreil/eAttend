@@ -385,13 +385,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             const summary = await API.getDashboardSummary();
-            document.getElementById('mgr-total-employees').textContent = summary.total_employees;
-            document.getElementById('mgr-today-attendance').textContent = summary.today_attendance;
-            document.getElementById('mgr-pending-leaves').textContent = summary.pending_leaves;
-            document.getElementById('mgr-approved-leaves').textContent = summary.approved_leaves;
-            document.getElementById('mgr-rejected-leaves').textContent = summary.rejected_leaves;
-            document.getElementById('mgr-total-attendance').textContent = summary.total_attendance;
-            document.getElementById('mgr-total-overtime').textContent = parseFloat(summary.total_overtime_hours || 0).toFixed(1);
+            const totalEmployees = Number(summary.total_employees ?? 0);
+            const todayAttendance = Number(summary.today_attendance ?? 0);
+            const pendingLeaves = Number(summary.pending_leaves ?? 0);
+            const approvedLeaves = Number(summary.approved_leaves ?? 0);
+            const rejectedLeaves = Number(summary.rejected_leaves ?? 0);
+            const totalAttendance = Number(summary.total_attendance ?? 0);
+            const totalOvertime = Number(summary.total_overtime_hours ?? 0);
+
+            document.getElementById('mgr-total-employees').textContent = totalEmployees;
+            document.getElementById('mgr-today-attendance').textContent = todayAttendance;
+            document.getElementById('mgr-pending-leaves').textContent = pendingLeaves;
+            document.getElementById('mgr-approved-leaves').textContent = approvedLeaves;
+            document.getElementById('mgr-rejected-leaves').textContent = rejectedLeaves;
+            document.getElementById('mgr-total-attendance').textContent = totalAttendance;
+            document.getElementById('mgr-total-overtime').textContent = totalOvertime.toFixed(1);
+
+            const navAttendanceCount = document.getElementById('nav-attendance-count');
+            if (navAttendanceCount) {
+                navAttendanceCount.textContent = String(totalAttendance);
+            }
         } catch { /* ignore */ }
 
         // Pending leaves

@@ -102,7 +102,7 @@ class AdminDashboardSummaryView(APIView):
             'total_employees': User.objects.filter(role='employee', is_active=True).count(),
             'total_attendance': Attendance.objects.count(),
             'today_attendance': Attendance.objects.filter(date=today).count(),
-            'total_overtime_hours': Attendance.objects.aggregate(total=Sum('overtime_hours'))['total'] or Decimal('0'),
+            'total_overtime_hours': float(Attendance.objects.aggregate(total=Sum('overtime_hours'))['total'] or Decimal('0')),
             'pending_leaves': LeaveRequest.objects.filter(status='pending').count(),
             'approved_leaves': LeaveRequest.objects.filter(status='approved').count(),
             'rejected_leaves': LeaveRequest.objects.filter(status='rejected').count(),
