@@ -205,33 +205,6 @@
             50%       { box-shadow: 0 4px 35px rgba(255,255,255,0.6); }
         }
 
-        /* ── Progress bar ── */
-        .redirect-wrap {
-            margin-top: 2rem;
-            animation: fadeSlideUp 0.7s ease 1.6s both;
-        }
-        .redirect-label {
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.45);
-            margin-bottom: 0.55rem;
-            letter-spacing: 0.5px;
-        }
-        .redirect-label span { color: rgba(255,255,255,0.75); font-weight: 600; }
-        .bar-track {
-            width: 200px;
-            height: 3px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 3px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #7de8ff, #fff);
-            border-radius: 3px;
-        }
-
         /* ── Version badge ── */
         .version-badge {
             margin-top: 2.5rem;
@@ -279,13 +252,6 @@
         <span class="arrow-icon"><i class="fas fa-arrow-right"></i></span>
     </a>
 
-    <div class="redirect-wrap">
-        <p class="redirect-label">Auto-redirecting in <span id="countdown">5</span>s</p>
-        <div class="bar-track">
-            <div class="bar-fill" id="progress-bar"></div>
-        </div>
-    </div>
-
     <p class="version-badge">eAttend v1.0 &bull; &copy; 2026</p>
 </div>
 
@@ -308,27 +274,6 @@
         }
     })();
 
-    // ── Auto-redirect countdown ──
-    (function startCountdown() {
-        const TOTAL = 5000;
-        const bar   = document.getElementById('progress-bar');
-        const label = document.getElementById('countdown');
-        const t0    = Date.now();
-
-        function tick() {
-            const elapsed = Date.now() - t0;
-            const pct     = Math.min((elapsed / TOTAL) * 100, 100);
-            bar.style.width = pct + '%';
-            label.textContent = Math.max(0, Math.ceil((TOTAL - elapsed) / 1000));
-
-            if (elapsed >= TOTAL) {
-                window.location.href = '/login/';
-            } else {
-                requestAnimationFrame(tick);
-            }
-        }
-        requestAnimationFrame(tick);
-    })();
 </script>
 
 </body>
