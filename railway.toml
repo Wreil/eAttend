@@ -1,0 +1,7 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "python manage.py migrate --run-syncdb && python manage.py collectstatic --no-input && gunicorn eattend.wsgi --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+healthcheckPath = "/login/"
+restartPolicyType = "on_failure"

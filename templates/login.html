@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eAttend — Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h1>eAttend</h1>
+                <p>Employee Attendance &amp; Leave Management</p>
+            </div>
+
+            <div id="login-alert" class="alert alert-danger d-none" role="alert"></div>
+
+            <form id="login-form" class="login-form" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control"
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="input-group">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="btn-toggle-pass" id="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                    <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Sign In</span>
+                    <span class="btn-loading d-none"><i class="fas fa-spinner fa-spin"></i> Signing in...</span>
+                </button>
+            </form>
+
+            <div class="text-center" style="margin: 1rem 0;">
+                <button type="button" class="btn btn-outline btn-block" id="show-register-btn">
+                    <i class="fas fa-user-plus"></i> Create New Account
+                </button>
+            </div>
+
+            <form id="register-form" class="login-form d-none" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="reg-full-name"><i class="fas fa-id-card"></i> Full Name</label>
+                    <input type="text" id="reg-full-name" class="form-control" placeholder="e.g. Juan Dela Cruz" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="reg-username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="reg-email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="reg-password" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password2"><i class="fas fa-lock"></i> Confirm Password</label>
+                    <input type="password" id="reg-password2" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="register-btn">
+                    <span class="btn-text"><i class="fas fa-user-plus"></i> Register</span>
+                    <span class="btn-loading d-none"><i class="fas fa-spinner fa-spin"></i> Creating account...</span>
+                </button>
+
+                <div class="text-center" style="margin-top: 0.75rem;">
+                    <button type="button" class="btn btn-secondary btn-block" id="back-to-login-btn">
+                        <i class="fas fa-arrow-left"></i> Back To Login
+                    </button>
+                </div>
+            </form>
+
+            <div class="login-footer">
+                <p class="text-muted">&copy; 2026 eAttend System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/api.js' %}?v=3"></script>
+    <script src="{% static 'js/auth.js' %}?v=3"></script>
+</body>
+</html>
