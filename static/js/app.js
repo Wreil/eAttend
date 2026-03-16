@@ -190,6 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Time In/Out
         document.getElementById('btn-time-in')?.addEventListener('click', handleTimeIn);
         document.getElementById('btn-time-out')?.addEventListener('click', handleTimeOut);
+        document.getElementById('btn-att-time-in')?.addEventListener('click', handleAttendancePageTimeIn);
+        document.getElementById('btn-att-time-out')?.addEventListener('click', handleAttendancePageTimeOut);
 
         // Attendance filter
         document.getElementById('btn-filter-att')?.addEventListener('click', loadMyAttendance);
@@ -491,6 +493,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const year = document.getElementById('att-year').value;
         const tbody = document.getElementById('att-history-tbody');
 
+        syncAttendancePageActions();
+
         tbody.innerHTML = `<tr><td colspan="8" class="text-center"><span class="spinner"></span></td></tr>`;
 
         try {
@@ -526,6 +530,79 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         } catch (err) {
             tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${escHtml(err.message)}</td></tr>`;
+        }
+    }
+
+    async function syncAttendancePageActions() {
+        const btnIn = document.getElementById('btn-att-time-in');
+        const btnOut = document.getElementById('btn-att-time-out');
+        const statusEl = document.getElementById('att-today-status');
+        if (!btnIn || !btnOut || !statusEl) return;
+
+        try {
+            const att = await API.getTodayAttendance();
+            if (!att) {
+                btnIn.classList.remove('d-none');
+                btnOut.classList.add('d-none');
+                statusEl.textContent = 'Today: Not timed in yet';
+                return;
+            }
+
+            if (!att.time_out) {
+                btnIn.classList.add('d-none');
+                btnOut.classList.remove('d-none');
+                statusEl.textContent = `Today: Timed in at ${formatTime(att.time_in)}`;
+            } else {
+                btnIn.classList.add('d-none');
+                btnOut.classList.add('d-none');
+                statusEl.textContent = `Today: Complete (${parseFloat(att.total_hours || 0).toFixed(2)}h, OT ${parseFloat(att.overtime_hours || 0).toFixed(2)}h)`;
+            }
+        } catch {
+            btnIn.classList.remove('d-none');
+            btnOut.classList.add('d-none');
+            statusEl.textContent = 'Today: Unable to load status';
+        }
+    }
+
+    async function handleAttendancePageTimeIn() {
+        const btn = document.getElementById('btn-att-time-in');
+        if (!btn) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recording...';
+        try {
+            await API.timeIn();
+            showToast('Time-in recorded successfully!', 'success');
+            await loadMyAttendance();
+            if (!currentUser.is_manager) {
+                await loadEmployeeDashboard();
+            }
+        } catch (err) {
+            showToast(err.message, 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-play"></i> Time In';
+        }
+    }
+
+    async function handleAttendancePageTimeOut() {
+        const btn = document.getElementById('btn-att-time-out');
+        if (!btn) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recording...';
+        try {
+            const att = await API.timeOut();
+            showToast(`Time-out recorded. Total: ${parseFloat(att.total_hours || 0).toFixed(2)}h, OT: ${parseFloat(att.overtime_hours || 0).toFixed(2)}h.`, 'success');
+            await loadMyAttendance();
+            if (!currentUser.is_manager) {
+                await loadEmployeeDashboard();
+            }
+        } catch (err) {
+            showToast(err.message, 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-stop"></i> Time Out';
         }
     }
 

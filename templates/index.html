@@ -349,6 +349,23 @@
                 <div class="page-header">
                     <h2><i class="fas fa-calendar-check"></i> My Attendance</h2>
                 </div>
+
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="btn btn-success" id="btn-att-time-in">
+                            <i class="fas fa-play"></i> Time In
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-danger" id="btn-att-time-out">
+                            <i class="fas fa-stop"></i> Time Out
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <span class="text-muted" id="att-today-status">Today: Checking status...</span>
+                    </div>
+                </div>
+
                 <div class="filter-bar">
                     <div class="filter-group">
                         <label>Month</label>
@@ -896,7 +913,7 @@
     <!-- Toast Notification -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="{% static 'js/api.js' %}?v=5"></script>
-    <script src="{% static 'js/app.js' %}?v=5"></script>
+    <script src="{% static 'js/api.js' %}?v=6"></script>
+    <script src="{% static 'js/app.js' %}?v=6"></script>
 </body>
 </html>
